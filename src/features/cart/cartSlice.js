@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
 
 const initialState = {
+    allProducts: [],
     cartItems: [],
     totalItems: 0,
     totalPrice: 0,
@@ -11,7 +12,7 @@ const initialState = {
 
 const productUrl = "https://dummyjson.com/products";
 
-export const getCartItems = createAsyncThunk('cart/getCartItems', async () => {
+export const getAllProducts = createAsyncThunk('cart/getAllProducts', async () => {
     try {
         const resp = await axios(productUrl);
         return resp;
@@ -26,19 +27,27 @@ const cartSlice = createSlice({
     initialState,
     reducers: {
         clearCart: (state) => {
-            state.cartItems = [];
+            state.allProducts = [];
             state.totalItems = 0;
+        },
+
+        addToCart: (state, action) => {
+            const item = state.allProducts.find((item) => item.id === action.payload);
+            if (!item) {
+                state.cartItems.push(item);
+            }
+            state.totalItems++;
         }
     },
     extraReducers: {
-        [getCartItems.padding]: (state) => {
+        [getAllProducts.pending]: (state) => {
             state.isLoading = true;
         },
-        [getCartItems.fulfilled]: (state, action) => {
+        [getAllProducts.fulfilled]: (state, { payload }) => {
             state.isLoading = false;
-            state.cartItems = action.payload;
+            state.allProducts = payload.data.products;
         },
-        [getCartItems.rejected]: (state, action) => {
+        [getAllProducts.rejected]: (state, action) => {
             state.isLoading = false;
             state.errorMessage = action.payload;
         }
@@ -48,5 +57,5 @@ const cartSlice = createSlice({
 
 
 
-export const { clearCart } = cartSlice.actions;
+export const { clearCart, addToCart } = cartSlice.actions;
 export default cartSlice.reducer;
