@@ -8,9 +8,9 @@ import Error from './pages/Error';
 
 function App() {
   return (
-    <div className="App">
+    <div >
       <Navbar />
-      <main>
+      <main className="px-16 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
