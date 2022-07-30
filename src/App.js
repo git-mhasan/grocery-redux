@@ -11,12 +11,14 @@ import { getAllProducts } from './features/cart/cartSlice';
 import Checkout from './pages/Checkout';
 
 function App() {
-  // const { allProducts, cartItems, isLoading, errorMessage } = useSelector(state => state.cart)
+  const { allProducts, cartItems, isLoading, errorMessage } = useSelector(state => state.cart)
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAllProducts());
   }, [])
+
+  // console.log(allProducts);
 
   return (
     <div >

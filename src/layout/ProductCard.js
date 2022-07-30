@@ -17,7 +17,7 @@ const ProductCard = ({ id, brand, title, category, description, price, amount, r
                     <h2 className="card-title">{title}</h2>
                     <p>{description.length > 60 ? description.slice(0, 60) : description}</p>
                     <div className="card-actions">
-                        <button className="btn btn-sm btn-primary" onClick={() => dispatch(addToCart(id))}>Add to Cart</button>
+                        <button className="btn btn-sm btn-primary" onClick={() => dispatch(addToCart({ id }))}>Add to Cart</button>
                         <button className="btn btn-sm btn-primary">Buy Now</button>
                     </div>
                 </div>

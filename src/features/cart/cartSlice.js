@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit'
 import axios from 'axios';
 
 const initialState = {
@@ -15,7 +15,7 @@ const productUrl = "https://dummyjson.com/products";
 export const getAllProducts = createAsyncThunk('cart/getAllProducts', async () => {
     try {
         const resp = await axios(productUrl);
-        return resp;
+        return resp.data;
     } catch (error) {
         return error.message;
     }
@@ -32,11 +32,26 @@ const cartSlice = createSlice({
         },
 
         addToCart: (state, action) => {
-            const item = state.allProducts.find((item) => item.id === action.payload);
-            if (!item) {
+            const item = current(state.allProducts).find((item) => item.id === action.payload.id);
+            const cartItem = current(state.cartItems).find((i) => i.id === action.payload.id);
+
+            // const item = state.allProducts?.find((item) => console.log(item.title));
+            // console.log(state.allProducts);
+            // console.log(current(state.allProducts))
+            // const item = state.allProducts.find((item) => console.log(item));
+            // console.log(item);
+            // console.log(action);
+
+            if (!cartItem) {
+                // item.amount = item.amount + 1;
                 state.cartItems.push(item);
+                state.totalItems++;
+                // console.log(item);
+                console.log(current(state.cartItems));
+
+            } else if (!!cartItem) {
+                state.totalItems++;
             }
-            state.totalItems++;
         }
     },
     extraReducers: {
@@ -45,7 +60,7 @@ const cartSlice = createSlice({
         },
         [getAllProducts.fulfilled]: (state, { payload }) => {
             state.isLoading = false;
-            state.allProducts = payload.data.products;
+            state.allProducts = payload.products;
         },
         [getAllProducts.rejected]: (state, action) => {
             state.isLoading = false;
