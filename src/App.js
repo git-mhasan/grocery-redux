@@ -7,12 +7,16 @@ import About from './pages/About';
 import Error from './pages/Error';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getAllProducts } from './features/cart/cartSlice';
+import { calculateTotal, getAllProducts } from './features/cart/cartSlice';
 import Checkout from './pages/Checkout';
 
 function App() {
   const { allProducts, cartItems, isLoading, errorMessage } = useSelector(state => state.cart)
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(calculateTotal());
+  }, [cartItems])
 
   useEffect(() => {
     dispatch(getAllProducts());
